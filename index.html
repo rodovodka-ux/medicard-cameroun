@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MediCard — Ma carte de vie</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-light:#E8C97A;--gold-pale:#F5EDD6;--black:#0A0A0A;--dark:#141414;--dark2:#1C1C1C;--dark3:#242424;--white:#FAFAF8;--muted:#888880;--border:rgba(201,168,76,0.2);--border-h:rgba(201,168,76,0.5);--red:#C0392B;--r:4px;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--black);color:var(--white);min-height:100vh;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 60% at 20% 10%,rgba(201,168,76,0.04) 0%,transparent 60%),radial-gradient(ellipse 60% 80% at 80% 90%,rgba(201,168,76,0.03) 0%,transparent 50%);pointer-events:none;z-index:0;}
+.hero{position:relative;padding:5rem 2rem 4rem;text-align:center;border-bottom:1px solid var(--border);overflow:hidden;}
+.hero::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:600px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--border);color:var(--gold);font-size:11px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;padding:6px 16px;border-radius:20px;margin-bottom:2rem;animation:fadeUp .8s ease both;}
+.hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--gold);animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+.hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(2.8rem,7vw,5rem);font-weight:300;color:var(--white);line-height:1.1;margin-bottom:.5rem;animation:fadeUp .8s .1s ease both;}
+.hero h1 span{color:var(--gold);font-style:italic;}
+.hero-sub{font-size:15px;color:var(--muted);font-weight:300;letter-spacing:.03em;margin-bottom:3rem;animation:fadeUp .8s .2s ease both;}
+.steps-bar{display:flex;align-items:center;justify-content:center;max-width:500px;margin:0 auto;animation:fadeUp .8s .3s ease both;}
+.step-item{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;}
+.step-num{width:32px;height:32px;border-radius:50%;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--muted);transition:all .3s;}
+.step-item.active .step-num{border-color:var(--gold);background:var(--gold);color:var(--black);font-weight:500;}
+.step-item.done .step-num{border-color:var(--gold);color:var(--gold);}
+.step-lbl{font-size:10px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;}
+.step-item.active .step-lbl{color:var(--gold);}
+.step-line{flex:1;height:1px;background:var(--border);max-width:40px;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+.form-wrap{max-width:680px;margin:0 auto;padding:3rem 1.5rem 4rem;position:relative;z-index:1;}
+.section{border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:1.5rem;animation:fadeUp .6s ease both;transition:border-color .3s;}
+.section:hover{border-color:var(--border-h);}
+.section-head{padding:1rem 1.5rem;background:var(--dark2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;}
+.section-icon{width:28px;height:28px;border:1px solid var(--border);border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;color:var(--gold);}
+.section-title{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.12em;color:var(--gold);}
+.section-badge{margin-left:auto;font-size:9px;padding:3px 8px;border-radius:10px;letter-spacing:.08em;text-transform:uppercase;}
+.section-badge.libre{background:rgba(201,168,76,.1);color:var(--gold);border:1px solid var(--border);}
+.section-badge.prive{background:rgba(101,76,178,.15);color:#9F8FD4;border:1px solid rgba(101,76,178,.3);}
+.section-body{padding:1.5rem;background:var(--dark);}
+.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;}
+.field-grid.full{grid-template-columns:1fr;}
+.field{display:flex;flex-direction:column;gap:7px;}
+label{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);}
+label .req{color:var(--gold);margin-left:2px;}
+input,select,textarea{font-family:'DM Sans',sans-serif;font-size:14px;font-weight:300;padding:11px 14px;background:var(--dark2);border:1px solid var(--border);border-radius:var(--r);color:var(--white);width:100%;transition:border-color .2s,background .2s;outline:none;appearance:none;}
+input::placeholder,textarea::placeholder{color:var(--muted);opacity:.5;}
+input:focus,select:focus,textarea:focus{border-color:var(--gold);background:var(--dark3);}
+select{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;}
+textarea{resize:vertical;min-height:80px;line-height:1.6;}
+.upload-zone{border:1px dashed var(--border);border-radius:var(--r);padding:2rem;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;background:var(--dark2);position:relative;}
+.upload-zone:hover{border-color:var(--gold);background:var(--dark3);}
+.upload-zone input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.upload-icon{font-size:2rem;margin-bottom:.5rem;opacity:.5;}
+.upload-text{font-size:13px;color:var(--muted);}
+.upload-text strong{color:var(--gold);}
+.upload-preview{display:none;width:80px;height:80px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);margin:0 auto .5rem;}
+.code-hint{font-size:11px;color:var(--muted);margin-top:6px;line-height:1.5;}
+.code-hint strong{color:var(--gold-light);}
+.divider{display:flex;align-items:center;gap:1rem;margin:1.5rem 0;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.1em;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border);}
+.urgence-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:1rem;}
+.urgence-item{background:var(--dark2);border:1px solid var(--border);border-radius:var(--r);padding:10px;text-align:center;}
+.urgence-num{font-size:18px;font-weight:500;color:var(--red);margin-bottom:3px;}
+.urgence-lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;}
+.btn-submit{width:100%;padding:16px;background:var(--gold);color:var(--black);border:none;border-radius:var(--r);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:background .2s,transform .1s;margin-top:.5rem;display:flex;align-items:center;justify-content:center;gap:10px;}
+.btn-submit:hover{background:var(--gold-light);}
+.btn-submit:active{transform:scale(.99);}
+.btn-submit:disabled{background:var(--dark3);color:var(--muted);cursor:not-allowed;}
+.form-note{text-align:center;font-size:11px;color:var(--muted);margin-top:1.5rem;line-height:1.7;letter-spacing:.03em;}
+.form-note span{color:var(--gold);}
+.success-screen{display:none;text-align:center;padding:4rem 2rem;}
+.success-screen.show{display:block;}
+.success-ring{width:80px;height:80px;border-radius:50%;border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;margin:0 auto 2rem;font-size:2rem;animation:popIn .5s cubic-bezier(.175,.885,.32,1.275);}
+@keyframes popIn{from{transform:scale(0);opacity:0;}to{transform:scale(1);opacity:1;}}
+.success-screen h2{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:300;color:var(--gold);margin-bottom:.75rem;}
+.success-screen p{color:var(--muted);font-size:14px;margin-bottom:2rem;line-height:1.7;}
+.link-display{background:var(--dark2);border:1px solid var(--border);border-radius:var(--r);padding:1rem 1.25rem;font-size:13px;color:var(--gold);word-break:break-all;margin-bottom:1rem;text-align:left;font-family:monospace;}
+.btn-copy{padding:10px 28px;background:transparent;color:var(--gold);border:1px solid var(--gold);border-radius:var(--r);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;letter-spacing:.08em;text-transform:uppercase;transition:background .2s,color .2s;}
+.btn-copy:hover{background:var(--gold);color:var(--black);}
+.section:nth-child(1){animation-delay:.1s;}
+.section:nth-child(2){animation-delay:.2s;}
+.section:nth-child(3){animation-delay:.3s;}
+.section:nth-child(4){animation-delay:.4s;}
+@media(max-width:520px){.field-grid{grid-template-columns:1fr;}.urgence-grid{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="hero-badge">Service officiel · Yaoundé, Cameroun</div>
+  <h1>Medi<span>Card</span></h1>
+  <p class="hero-sub">Ma carte de vie — Créez votre fiche médicale personnalisée</p>
+  <div class="steps-bar">
+    <div class="step-item active" id="s1"><div class="step-num">1</div><div class="step-lbl">Identité</div></div>
+    <div class="step-line"></div>
+    <div class="step-item" id="s2"><div class="step-num">2</div><div class="step-lbl">Médical</div></div>
+    <div class="step-line"></div>
+    <div class="step-item" id="s3"><div class="step-num">3</div><div class="step-lbl">Privé</div></div>
+    <div class="step-line"></div>
+    <div class="step-item" id="s4"><div class="step-num">4</div><div class="step-lbl">Prêt</div></div>
+  </div>
+</div>
+<div class="form-wrap">
+  <div id="formSection">
+    <div class="section">
+      <div class="section-head">
+        <div class="section-icon">👤</div>
+        <div class="section-title">Identité personnelle</div>
+        <span class="section-badge libre">Accès libre</span>
+      </div>
+      <div class="section-body">
+        <div class="field-grid" style="margin-bottom:1rem">
+          <div class="field"><label>Nom complet <span class="req">*</span></label><input type="text" id="nom" placeholder="Ex: Roland Djienga"></div>
+          <div class="field"><label>Date de naissance <span class="req">*</span></label><input type="date" id="ddn"></div>
+        </div>
+        <div class="field-grid">
+          <div class="field"><label>Téléphone <span class="req">*</span></label><input type="tel" id="tel" placeholder="658 000 000"></div>
+          <div class="field"><label>Adresse</label><input type="text" id="adresse" placeholder="Yaoundé, Cameroun"></div>
+        </div>
+        <div class="divider">Photo (optionnelle)</div>
+        <div class="upload-zone" id="uploadZone">
+          <input type="file" accept="image/*" id="photoInput" onchange="previewPhoto(this)">
+          <img class="upload-preview" id="photoPreview" alt="Photo">
+          <div class="upload-icon" id="uploadIcon">📷</div>
+          <div class="upload-text"><strong>Cliquez pour ajouter votre photo</strong><br>Affichée sur votre fiche médicale</div>
+        </div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-head">
+        <div class="section-icon">🩸</div>
+        <div class="section-title">Informations médicales</div>
+        <span class="section-badge libre">Accès libre</span>
+      </div>
+      <div class="section-body">
+        <div class="field-grid" style="margin-bottom:1rem">
+          <div class="field"><label>Groupe sanguin <span class="req">*</span></label><select id="groupe"><option value="">Sélectionner...</option><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>AB+</option><option>AB-</option><option>O+</option><option>O-</option><option>Inconnu</option></select></div>
+          <div class="field"><label>Médecin traitant</label><input type="text" id="medecin" placeholder="Dr. Nom — Téléphone"></div>
+        </div>
+        <div class="field-grid full" style="margin-bottom:1rem">
+          <div class="field"><label>Allergies connues</label><textarea id="allergies" placeholder="Ex: Pénicilline, arachides, latex..."></textarea></div>
+        </div>
+        <div class="field-grid" style="margin-bottom:1rem">
+          <div class="field"><label>Maladies importantes</label><textarea id="maladies" placeholder="Ex: Asthme, diabète..."></textarea></div>
+          <div class="field"><label>Médicaments en cours</label><textarea id="medicaments" placeholder="Ex: Ventoline 100µg..."></textarea></div>
+        </div>
+        <div class="divider">Numéros d'urgence Cameroun</div>
+        <div class="urgence-grid">
+          <div class="urgence-item"><div class="urgence-num">15</div><div class="urgence-lbl">SAMU</div></div>
+          <div class="urgence-item"><div class="urgence-num">18</div><div class="urgence-lbl">Pompiers</div></div>
+          <div class="urgence-item"><div class="urgence-num">17</div><div class="urgence-lbl">Police</div></div>
+          <div class="urgence-item"><div class="urgence-num">112</div><div class="urgence-lbl">Urgences</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-head">
+        <div class="section-icon">📞</div>
+        <div class="section-title">Contacts d'urgence</div>
+        <span class="section-badge libre">Accès libre</span>
+      </div>
+      <div class="section-body">
+        <div class="field-grid" style="margin-bottom:1rem">
+          <div class="field"><label>Contact 1 — Nom <span class="req">*</span></label><input type="text" id="c1nom" placeholder="Nom du proche"></div>
+          <div class="field"><label>Contact 1 — Téléphone <span class="req">*</span></label><input type="tel" id="c1tel" placeholder="690 000 000"></div>
+        </div>
+        <div class="field-grid">
+          <div class="field"><label>Contact 2 — Nom</label><input type="text" id="c2nom" placeholder="Nom du proche"></div>
+          <div class="field"><label>Contact 2 — Téléphone</label><input type="tel" id="c2tel" placeholder="691 000 000"></div>
+        </div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-head">
+        <div class="section-icon">🔐</div>
+        <div class="section-title">Espace privé — Proche de confiance</div>
+        <span class="section-badge prive">Code requis</span>
+      </div>
+      <div class="section-body">
+        <div class="field-grid full" style="margin-bottom:1rem">
+          <div class="field">
+            <label>Code secret <span class="req">*</span></label>
+            <input type="text" id="code" placeholder="Ex: MARIE1990 ou votre mot choisi" maxlength="20">
+            <div class="code-hint">Choisissez un mot que <strong>vous communiquerez uniquement à vos proches de confiance</strong>. Ce code protège vos documents et votre message personnel.</div>
+          </div>
+        </div>
+        <div class="divider">Message personnel</div>
+        <div class="field-grid full" style="margin-bottom:1rem">
+          <div class="field"><label>Message pour vos proches</label><textarea id="message" rows="4" placeholder="Un message que vos proches pourront lire en cas d'urgence... Vos volontés, ce qui compte pour vous."></textarea></div>
+        </div>
+        <div class="divider">Coffre-fort numérique</div>
+        <div class="field-grid" style="margin-bottom:1rem">
+          <div class="field"><label>N° CNI / Passeport</label><input type="text" id="cni" placeholder="Numéro de pièce d'identité"></div>
+          <div class="field"><label>N° Assurance maladie</label><input type="text" id="assurance" placeholder="Numéro d'assurance"></div>
+        </div>
+        <div class="field-grid full">
+          <div class="field"><label>Informations confidentielles</label><textarea id="confidentiel" placeholder="Autres informations à transmettre à vos proches uniquement..."></textarea></div>
+        </div>
+      </div>
+    </div>
+    <button class="btn-submit" id="btnSubmit" onclick="submitForm()">
+      <span>✦</span> Créer ma fiche MediCard
+    </button>
+    <p class="form-note">🔒 Vos données sont protégées. Le code secret n'est jamais partagé.<br>Un service <span>MediCard Cameroun</span> — Yaoundé</p>
+  </div>
+  <div class="success-screen" id="successScreen">
+    <div class="success-ring">✦</div>
+    <h2>Votre fiche est créée</h2>
+    <p>Votre MediCard est prête. Partagez ce lien unique avec vos proches<br>ou imprimez votre QR code pour votre carte physique.</p>
+    <div class="link-display" id="uniqueLink">—</div>
+    <button class="btn-copy" onclick="copyLink()">Copier le lien</button>
+    <p style="margin-top:2rem;font-size:12px;color:var(--muted);">Conservez ce lien précieusement — il est unique et permanent.</p>
+  </div>
+</div>
+<script>
+let photoBase64=null;
+function generateId(){return 'MC'+Date.now().toString(36).toUpperCase()+Math.random().toString(36).substr(2,4).toUpperCase();}
+function previewPhoto(input){if(input.files&&input.files[0]){const r=new FileReader();r.onload=e=>{const p=document.getElementById('photoPreview');const i=document.getElementById('uploadIcon');p.src=e.target.result;p.style.display='block';i.style.display='none';photoBase64=e.target.result;};r.readAsDataURL(input.files[0]);}}
+function updateSteps(s){for(let i=1;i<=4;i++){const el=document.getElementById('s'+i);el.classList.remove('active','done');if(i<s)el.classList.add('done');if(i===s)el.classList.add('active');}}
+async function submitForm(){
+  const nom=document.getElementById('nom').value.trim();
+  const ddn=document.getElementById('ddn').value;
+  const tel=document.getElementById('tel').value.trim();
+  const groupe=document.getElementById('groupe').value;
+  const c1nom=document.getElementById('c1nom').value.trim();
+  const c1tel=document.getElementById('c1tel').value.trim();
+  const code=document.getElementById('code').value.trim();
+  if(!nom||!ddn||!tel||!groupe||!c1nom||!c1tel){alert('Veuillez remplir tous les champs obligatoires (*)');return;}
+  if(!code){alert('Veuillez choisir un code secret pour protéger votre espace privé.');return;}
+  const btn=document.getElementById('btnSubmit');
+  btn.disabled=true;btn.innerHTML='<span>⏳</span> Création en cours...';updateSteps(4);
+  const id=generateId();
+  const data={id,nom,ddn:new Date(ddn).toLocaleDateString('fr-FR'),tel,adresse:document.getElementById('adresse').value.trim(),groupe,medecin:document.getElementById('medecin').value.trim(),allergies:document.getElementById('allergies').value.trim(),maladies:document.getElementById('maladies').value.trim(),medicaments:document.getElementById('medicaments').value.trim(),c1nom,c1tel,c2nom:document.getElementById('c2nom').value.trim(),c2tel:document.getElementById('c2tel').value.trim(),code,message:document.getElementById('message').value.trim(),cni:document.getElementById('cni').value.trim(),assurance:document.getElementById('assurance').value.trim(),confidentiel:document.getElementById('confidentiel').value.trim(),photo:photoBase64,date:new Date().toLocaleDateString('fr-FR'),numero_id:id};
+  const all=JSON.parse(localStorage.getItem('medicard_fiches')||'{}');all[id]=data;localStorage.setItem('medicard_fiches',JSON.stringify(all));
+  const link=window.location.origin+'/fiche.html?id='+id;
+  document.getElementById('uniqueLink').textContent=link;
+  document.getElementById('formSection').style.opacity='0';
+  setTimeout(()=>{document.getElementById('formSection').style.display='none';document.getElementById('successScreen').classList.add('show');},300);
+}
+function copyLink(){const link=document.getElementById('uniqueLink').textContent;navigator.clipboard.writeText(link).then(()=>{const b=document.querySelector('.btn-copy');b.textContent='✓ Copié !';setTimeout(()=>b.textContent='Copier le lien',2000);});}
+</script>
+</body>
+</html>

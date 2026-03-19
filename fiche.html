@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MediCard — Fiche médicale</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#C9A84C;--gold-light:#E8C97A;--black:#0A0A0A;--dark:#141414;--dark2:#1C1C1C;--dark3:#242424;--white:#FAFAF8;--muted:#888880;--border:rgba(201,168,76,0.2);--red:#C0392B;--red-light:rgba(192,57,43,0.12);--amber:rgba(201,168,76,0.12);--purple:rgba(101,76,178,0.15);--purple-border:rgba(101,76,178,0.4);--r:4px;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--black);color:var(--white);min-height:100vh;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 60% at 20% 10%,rgba(201,168,76,0.04) 0%,transparent 60%);pointer-events:none;z-index:0;}
+.topbar{background:var(--dark2);border-bottom:1px solid var(--border);padding:12px 1.5rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.topbar-brand{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:300;color:var(--gold);}
+.topbar-brand span{font-style:italic;}
+.btn-print{background:transparent;color:var(--gold);border:1px solid var(--border);padding:6px 16px;border-radius:var(--r);font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;letter-spacing:.08em;text-transform:uppercase;transition:all .2s;}
+.btn-print:hover{background:var(--gold);color:var(--black);}
+.wrap{max-width:620px;margin:2rem auto;padding:0 1.5rem 4rem;position:relative;z-index:1;}
+/* SOS HEADER */
+.sos-card{background:var(--red-light);border:1px solid rgba(192,57,43,0.3);border-radius:12px;padding:1.5rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:1rem;}
+.sos-circle{width:56px;height:56px;background:var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;}
+.sos-photo{width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);flex-shrink:0;}
+.sos-name{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:400;color:var(--white);line-height:1.2;}
+.sos-meta{font-size:13px;color:var(--muted);margin-top:4px;}
+/* VITALS */
+.vitals{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:1.5rem;}
+.vital{background:var(--dark2);border:1px solid var(--border);border-radius:8px;padding:1rem;text-align:center;}
+.vital.blood{background:var(--red-light);border-color:rgba(192,57,43,0.3);}
+.vital-val{font-family:'Cormorant Garamond',serif;font-size:1.8rem;font-weight:400;color:var(--white);line-height:1;margin-bottom:4px;}
+.vital.blood .vital-val{color:var(--red);font-size:2.2rem;}
+.vital-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;}
+/* SECTION */
+.card{background:var(--dark2);border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:1rem;}
+.card-head{padding:.75rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;}
+.card-head-icon{font-size:14px;}
+.card-head-title{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);}
+.card-body{padding:1.25rem;}
+.info-row{display:flex;gap:10px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.04);align-items:flex-start;}
+.info-row:last-child{border-bottom:none;padding-bottom:0;}
+.info-lbl{font-size:12px;color:var(--muted);min-width:100px;padding-top:1px;flex-shrink:0;}
+.info-val{font-size:14px;color:var(--white);font-weight:300;flex:1;}
+.info-val.empty{color:var(--muted);font-style:italic;font-weight:300;}
+.pill{display:inline-block;font-size:12px;padding:3px 10px;border-radius:12px;margin:2px 3px 2px 0;}
+.pill.red{background:var(--red-light);color:#F09595;border:1px solid rgba(192,57,43,0.3);}
+.pill.amber{background:var(--amber);color:var(--gold);border:1px solid var(--border);}
+/* CONTACT */
+.contact-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.contact-item:last-child{border-bottom:none;}
+.contact-av{width:38px;height:38px;border-radius:50%;background:var(--dark3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;color:var(--gold);flex-shrink:0;}
+.contact-name{font-size:14px;font-weight:400;}
+.contact-tel a{font-size:13px;color:var(--gold);text-decoration:none;display:block;margin-top:2px;}
+/* URGENCE */
+.urgence-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.urgence-item{background:var(--dark3);border:1px solid var(--border);border-radius:var(--r);padding:10px;text-align:center;}
+.urgence-num{font-size:18px;font-weight:500;color:var(--red);margin-bottom:2px;}
+.urgence-lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;}
+/* QR */
+.qr-card{background:var(--dark2);border:1px solid var(--border);border-radius:8px;padding:1.5rem;text-align:center;margin-bottom:1rem;}
+.qr-card h3{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:300;color:var(--gold);margin-bottom:.4rem;}
+.qr-card p{font-size:12px;color:var(--muted);margin-bottom:1.25rem;}
+/* PRIVATE SECTION */
+.private-section{border:1px solid var(--purple-border);border-radius:8px;overflow:hidden;margin-bottom:1rem;}
+.private-head{padding:.75rem 1.25rem;background:rgba(101,76,178,0.1);border-bottom:1px solid var(--purple-border);display:flex;align-items:center;gap:8px;}
+.private-head-title{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.1em;color:#9F8FD4;}
+.private-body{padding:1.25rem;background:var(--dark);}
+/* LOCK */
+.lock-box{text-align:center;padding:2.5rem 1.5rem;}
+.lock-icon{font-size:2.5rem;margin-bottom:1rem;opacity:.6;}
+.lock-title{font-family:'Cormorant Garamond',serif;font-size:1.4rem;font-weight:300;color:#9F8FD4;margin-bottom:.5rem;}
+.lock-sub{font-size:13px;color:var(--muted);margin-bottom:1.5rem;line-height:1.6;}
+.lock-input-row{display:flex;gap:8px;max-width:320px;margin:0 auto;}
+.lock-input{flex:1;font-family:'DM Sans',sans-serif;font-size:14px;padding:10px 14px;background:var(--dark2);border:1px solid var(--purple-border);border-radius:var(--r);color:var(--white);outline:none;}
+.lock-input:focus{border-color:#9F8FD4;}
+.lock-btn{padding:10px 20px;background:rgba(101,76,178,0.3);color:#9F8FD4;border:1px solid var(--purple-border);border-radius:var(--r);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;white-space:nowrap;transition:all .2s;}
+.lock-btn:hover{background:rgba(101,76,178,0.5);}
+.lock-error{font-size:12px;color:var(--red);margin-top:.75rem;display:none;}
+.private-content{display:none;}
+.private-content.show{display:block;}
+.message-box{background:var(--dark3);border:1px solid rgba(101,76,178,0.2);border-radius:var(--r);padding:1.25rem;font-size:14px;font-weight:300;line-height:1.8;color:var(--white);font-style:italic;}
+/* LOADING */
+.loading{text-align:center;padding:4rem;color:var(--muted);}
+.spinner{width:40px;height:40px;border:2px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 1rem;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.not-found{text-align:center;padding:4rem;}
+.not-found h2{font-family:'Cormorant Garamond',serif;font-size:2rem;color:var(--red);margin-bottom:.5rem;}
+.id-badge{display:inline-block;background:var(--dark2);border:1px solid var(--border);border-radius:var(--r);padding:3px 10px;font-size:11px;color:var(--muted);font-family:monospace;margin-top:.5rem;}
+@media(max-width:500px){.vitals{grid-template-columns:1fr 1fr;}.urgence-row{grid-template-columns:1fr 1fr;}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="topbar-brand">Medi<span>Card</span></div>
+  <button class="btn-print" onclick="window.print()">Imprimer</button>
+</div>
+<div class="wrap" id="app">
+  <div class="loading"><div class="spinner"></div>Chargement de la fiche...</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+function getParam(n){return new URLSearchParams(window.location.search).get(n);}
+function initials(n){if(!n)return '?';return n.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);}
+function pills(text,type){if(!text)return '<span class="info-val empty">Non renseigné</span>';return text.split(',').map(t=>`<span class="pill ${type}">${t.trim()}</span>`).join('');}
+function val(text){return text?`<span class="info-val">${text}</span>`:'<span class="info-val empty">Non renseigné</span>';}
+
+function loadFiche(){
+  const id=getParam('id');
+  const app=document.getElementById('app');
+  if(!id){app.innerHTML='<div class="not-found"><h2>Fiche introuvable</h2><p>Aucun identifiant fourni.</p></div>';return;}
+  let data=null;
+  try{const local=JSON.parse(localStorage.getItem('medicard_fiches')||'{}');if(local[id])data=local[id];}catch(e){}
+  if(!data){app.innerHTML=`<div class="not-found"><h2>Fiche introuvable</h2><p>Cette fiche n'existe pas ou a été supprimée.</p><div class="id-badge">${id}</div></div>`;return;}
+  renderFiche(data);
+}
+
+function renderFiche(d){
+  const app=document.getElementById('app');
+  const link=window.location.href;
+  const photoHTML=d.photo?`<img class="sos-photo" src="${d.photo}" alt="Photo">`:`<div class="sos-circle">🆘</div>`;
+
+  app.innerHTML=`
+    <div class="sos-card">
+      ${photoHTML}
+      <div>
+        <div class="sos-name">${d.nom||'—'}</div>
+        <div class="sos-meta">Né(e) le ${d.ddn||'—'} &nbsp;·&nbsp; ${d.adresse||'Cameroun'}</div>
+        <div class="id-badge">${d.numero_id||d.id}</div>
+      </div>
+    </div>
+
+    <div class="vitals">
+      <div class="vital blood"><div class="vital-val">${d.groupe||'?'}</div><div class="vital-lbl">Groupe sanguin</div></div>
+      <div class="vital"><div class="vital-val" style="font-size:1.1rem;padding-top:6px;">${d.tel||'—'}</div><div class="vital-lbl">Téléphone</div></div>
+      <div class="vital"><div class="vital-val" style="font-size:1rem;padding-top:6px;">${d.date||'—'}</div><div class="vital-lbl">Date fiche</div></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="card-head-icon">⚠️</span><span class="card-head-title">Informations médicales critiques</span></div>
+      <div class="card-body">
+        <div class="info-row"><span class="info-lbl">Allergies</span><div>${d.allergies?pills(d.allergies,'red'):'<span class="info-val empty">Aucune connue</span>'}</div></div>
+        <div class="info-row"><span class="info-lbl">Maladies</span><div>${d.maladies?pills(d.maladies,'amber'):'<span class="info-val empty">Aucune connue</span>'}</div></div>
+        <div class="info-row"><span class="info-lbl">Médicaments</span>${val(d.medicaments)}</div>
+        <div class="info-row"><span class="info-lbl">Médecin</span>${val(d.medecin)}</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="card-head-icon">📞</span><span class="card-head-title">Contacts d'urgence</span></div>
+      <div class="card-body">
+        ${d.c1nom?`<div class="contact-item"><div class="contact-av">${initials(d.c1nom)}</div><div><div class="contact-name">${d.c1nom}</div><div class="contact-tel"><a href="tel:${d.c1tel}">${d.c1tel}</a></div></div></div>`:''}
+        ${d.c2nom?`<div class="contact-item"><div class="contact-av">${initials(d.c2nom)}</div><div><div class="contact-name">${d.c2nom}</div><div class="contact-tel"><a href="tel:${d.c2tel}">${d.c2tel}</a></div></div></div>`:''}
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head"><span class="card-head-icon">🚨</span><span class="card-head-title">Numéros d'urgence — Cameroun</span></div>
+      <div class="card-body">
+        <div class="urgence-row">
+          <div class="urgence-item"><div class="urgence-num">15</div><div class="urgence-lbl">SAMU</div></div>
+          <div class="urgence-item"><div class="urgence-num">18</div><div class="urgence-lbl">Pompiers</div></div>
+          <div class="urgence-item"><div class="urgence-num">17</div><div class="urgence-lbl">Police</div></div>
+          <div class="urgence-item"><div class="urgence-num">112</div><div class="urgence-lbl">Urgences</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="private-section">
+      <div class="private-head"><span>🔐</span><span class="private-head-title">Espace privé — Proche de confiance</span></div>
+      <div class="private-body">
+        <div class="lock-box" id="lockBox">
+          <div class="lock-icon">🔒</div>
+          <div class="lock-title">Contenu protégé</div>
+          <div class="lock-sub">Entrez le code secret pour accéder au coffre-fort numérique et au message personnel.</div>
+          <div class="lock-input-row">
+            <input class="lock-input" type="password" id="codeInput" placeholder="Code secret..." onkeydown="if(event.key==='Enter')unlock()">
+            <button class="lock-btn" onclick="unlock()">Accéder</button>
+          </div>
+          <div class="lock-error" id="lockError">Code incorrect. Réessayez.</div>
+        </div>
+        <div class="private-content" id="privateContent">
+          <div id="messageSection"></div>
+          <div id="coffreSection"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="qr-card">
+      <h3>QR code de cette fiche</h3>
+      <p>À imprimer sur votre carte médicale MediCard</p>
+      <div id="qrcode" style="display:inline-block;"></div>
+    </div>
+  `;
+
+  // QR code
+  new QRCode(document.getElementById('qrcode'),{text:link,width:150,height:150,colorDark:'#C9A84C',colorLight:'#141414',correctLevel:QRCode.CorrectLevel.H});
+
+  // Unlock function
+  window._ficheData = d;
+  window.unlock = function(){
+    const input=document.getElementById('codeInput').value.trim();
+    if(input===d.code){
+      document.getElementById('lockBox').style.display='none';
+      const pc=document.getElementById('privateContent');
+      pc.classList.add('show');
+
+      // Message
+      let msgHTML='';
+      if(d.message){
+        msgHTML=`<div style="margin-bottom:1.25rem">
+          <div style="font-size:11px;color:#9F8FD4;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem;">💌 Message personnel</div>
+          <div class="message-box">"${d.message}"</div>
+        </div>`;
+      }
+      document.getElementById('messageSection').innerHTML=msgHTML;
+
+      // Coffre
+      let coffreHTML='<div style="font-size:11px;color:#9F8FD4;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem;">🔐 Coffre-fort numérique</div>';
+      const rows=[['N° CNI / Passeport',d.cni],['N° Assurance',d.assurance],['Informations confidentielles',d.confidentiel]];
+      rows.forEach(([lbl,v])=>{
+        if(v) coffreHTML+=`<div class="info-row"><span class="info-lbl">${lbl}</span><span class="info-val">${v}</span></div>`;
+      });
+      document.getElementById('coffreSection').innerHTML=coffreHTML;
+    } else {
+      const err=document.getElementById('lockError');
+      err.style.display='block';
+      document.getElementById('codeInput').style.borderColor='var(--red)';
+      setTimeout(()=>{err.style.display='none';document.getElementById('codeInput').style.borderColor='';},3000);
+    }
+  };
+}
+
+loadFiche();
+</script>
+</body>
+</html>
