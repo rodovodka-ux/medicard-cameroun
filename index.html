@@ -13,13 +13,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--black);color:var(--white)
 body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 60% at 20% 10%,rgba(201,168,76,0.04) 0%,transparent 60%),radial-gradient(ellipse 60% 80% at 80% 90%,rgba(201,168,76,0.03) 0%,transparent 50%);pointer-events:none;z-index:0;}
 .hero{position:relative;padding:5rem 2rem 4rem;text-align:center;border-bottom:1px solid var(--border);overflow:hidden;}
 .hero::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:600px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
-.hero-badge{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--border);color:var(--gold);font-size:11px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;padding:6px 16px;border-radius:20px;margin-bottom:2rem;animation:fadeUp .8s ease both;}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--border);color:var(--gold);font-size:11px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;padding:6px 16px;border-radius:20px;margin-bottom:2rem;}
 .hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--gold);animation:pulse 2s infinite;}
 @keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
-.hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(2.8rem,7vw,5rem);font-weight:300;color:var(--white);line-height:1.1;margin-bottom:.5rem;animation:fadeUp .8s .1s ease both;}
+.hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(2.8rem,7vw,5rem);font-weight:300;color:var(--white);line-height:1.1;margin-bottom:.5rem;}
 .hero h1 span{color:var(--gold);font-style:italic;}
-.hero-sub{font-size:15px;color:var(--muted);font-weight:300;letter-spacing:.03em;margin-bottom:3rem;animation:fadeUp .8s .2s ease both;}
-.steps-bar{display:flex;align-items:center;justify-content:center;max-width:500px;margin:0 auto;animation:fadeUp .8s .3s ease both;}
+.hero-sub{font-size:15px;color:var(--muted);font-weight:300;letter-spacing:.03em;margin-bottom:3rem;}
+.steps-bar{display:flex;align-items:center;justify-content:center;max-width:500px;margin:0 auto;}
 .step-item{display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;}
 .step-num{width:32px;height:32px;border-radius:50%;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--muted);transition:all .3s;}
 .step-item.active .step-num{border-color:var(--gold);background:var(--gold);color:var(--black);font-weight:500;}
@@ -27,12 +27,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .step-lbl{font-size:10px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;}
 .step-item.active .step-lbl{color:var(--gold);}
 .step-line{flex:1;height:1px;background:var(--border);max-width:40px;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
 .form-wrap{max-width:680px;margin:0 auto;padding:3rem 1.5rem 4rem;position:relative;z-index:1;}
-.section{border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:1.5rem;animation:fadeUp .6s ease both;transition:border-color .3s;}
+.section{border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:1.5rem;transition:border-color .3s;}
 .section:hover{border-color:var(--border-h);}
 .section-head{padding:1rem 1.5rem;background:var(--dark2);border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;}
-.section-icon{width:28px;height:28px;border:1px solid var(--border);border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;color:var(--gold);}
+.section-icon{width:28px;height:28px;border:1px solid var(--border);border-radius:var(--r);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;}
 .section-title{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.12em;color:var(--gold);}
 .section-badge{margin-left:auto;font-size:9px;padding:3px 8px;border-radius:10px;letter-spacing:.08em;text-transform:uppercase;}
 .section-badge.libre{background:rgba(201,168,76,.1);color:var(--gold);border:1px solid var(--border);}
@@ -50,7 +49,7 @@ select{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='htt
 textarea{resize:vertical;min-height:80px;line-height:1.6;}
 .upload-zone{border:1px dashed var(--border);border-radius:var(--r);padding:2rem;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;background:var(--dark2);position:relative;}
 .upload-zone:hover{border-color:var(--gold);background:var(--dark3);}
-.upload-zone input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.upload-zone input[type="file"]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
 .upload-icon{font-size:2rem;margin-bottom:.5rem;opacity:.5;}
 .upload-text{font-size:13px;color:var(--muted);}
 .upload-text strong{color:var(--gold);}
@@ -67,21 +66,16 @@ textarea{resize:vertical;min-height:80px;line-height:1.6;}
 .btn-submit:hover{background:var(--gold-light);}
 .btn-submit:active{transform:scale(.99);}
 .btn-submit:disabled{background:var(--dark3);color:var(--muted);cursor:not-allowed;}
-.form-note{text-align:center;font-size:11px;color:var(--muted);margin-top:1.5rem;line-height:1.7;letter-spacing:.03em;}
+.form-note{text-align:center;font-size:11px;color:var(--muted);margin-top:1.5rem;line-height:1.7;}
 .form-note span{color:var(--gold);}
 .success-screen{display:none;text-align:center;padding:4rem 2rem;}
 .success-screen.show{display:block;}
-.success-ring{width:80px;height:80px;border-radius:50%;border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;margin:0 auto 2rem;font-size:2rem;animation:popIn .5s cubic-bezier(.175,.885,.32,1.275);}
-@keyframes popIn{from{transform:scale(0);opacity:0;}to{transform:scale(1);opacity:1;}}
+.success-ring{width:80px;height:80px;border-radius:50%;border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;margin:0 auto 2rem;font-size:2rem;}
 .success-screen h2{font-family:'Cormorant Garamond',serif;font-size:2.2rem;font-weight:300;color:var(--gold);margin-bottom:.75rem;}
 .success-screen p{color:var(--muted);font-size:14px;margin-bottom:2rem;line-height:1.7;}
 .link-display{background:var(--dark2);border:1px solid var(--border);border-radius:var(--r);padding:1rem 1.25rem;font-size:13px;color:var(--gold);word-break:break-all;margin-bottom:1rem;text-align:left;font-family:monospace;}
 .btn-copy{padding:10px 28px;background:transparent;color:var(--gold);border:1px solid var(--gold);border-radius:var(--r);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;letter-spacing:.08em;text-transform:uppercase;transition:background .2s,color .2s;}
 .btn-copy:hover{background:var(--gold);color:var(--black);}
-.section:nth-child(1){animation-delay:.1s;}
-.section:nth-child(2){animation-delay:.2s;}
-.section:nth-child(3){animation-delay:.3s;}
-.section:nth-child(4){animation-delay:.4s;}
 @media(max-width:520px){.field-grid{grid-template-columns:1fr;}.urgence-grid{grid-template-columns:1fr 1fr;}}
 </style>
 </head>
@@ -100,8 +94,10 @@ textarea{resize:vertical;min-height:80px;line-height:1.6;}
     <div class="step-item" id="s4"><div class="step-num">4</div><div class="step-lbl">Prêt</div></div>
   </div>
 </div>
+
 <div class="form-wrap">
   <div id="formSection">
+
     <div class="section">
       <div class="section-head">
         <div class="section-icon">👤</div>
@@ -126,6 +122,7 @@ textarea{resize:vertical;min-height:80px;line-height:1.6;}
         </div>
       </div>
     </div>
+
     <div class="section">
       <div class="section-head">
         <div class="section-icon">🩸</div>
@@ -153,6 +150,7 @@ textarea{resize:vertical;min-height:80px;line-height:1.6;}
         </div>
       </div>
     </div>
+
     <div class="section">
       <div class="section-head">
         <div class="section-icon">📞</div>
@@ -170,6 +168,7 @@ textarea{resize:vertical;min-height:80px;line-height:1.6;}
         </div>
       </div>
     </div>
+
     <div class="section">
       <div class="section-head">
         <div class="section-icon">🔐</div>
@@ -198,11 +197,13 @@ textarea{resize:vertical;min-height:80px;line-height:1.6;}
         </div>
       </div>
     </div>
+
     <button class="btn-submit" id="btnSubmit" onclick="submitForm()">
       <span>✦</span> Créer ma fiche MediCard
     </button>
     <p class="form-note">🔒 Vos données sont protégées. Le code secret n'est jamais partagé.<br>Un service <span>MediCard Cameroun</span> — Yaoundé</p>
   </div>
+
   <div class="success-screen" id="successScreen">
     <div class="success-ring">✦</div>
     <h2>Votre fiche est créée</h2>
@@ -212,66 +213,132 @@ textarea{resize:vertical;min-height:80px;line-height:1.6;}
     <p style="margin-top:2rem;font-size:12px;color:var(--muted);">Conservez ce lien — il donne accès à votre fiche médicale complète.</p>
   </div>
 </div>
+
 <script>
-// =====================================================
-// EMAILJS CONFIG — À remplir après inscription
-// 1. Va sur emailjs.com
-// 2. Crée un compte gratuit
-// 3. Crée un service Gmail
-// 4. Crée un template avec les variables ci-dessous
-// 5. Remplace les 3 valeurs suivantes
-// =====================================================
-const EMAILJS_SERVICE_ID = 'REMPLACE_SERVICE_ID';
-const EMAILJS_TEMPLATE_ID = 'REMPLACE_TEMPLATE_ID';
-const EMAILJS_PUBLIC_KEY = 'REMPLACE_PUBLIC_KEY';
-const ADMIN_EMAIL = 'rodovodka@gmail.com';
-const BASE_URL = 'https://rodovodka-ux.github.io/medicard-cameroun';
-// =====================================================
+var BASE_URL = 'https://rodovodka-ux.github.io/medicard-cameroun';
+var FORMSPREE_URL = 'https://formspree.io/f/mojkrwyp';
+var photoBase64 = null;
 
-let photoBase64 = null;
-function generateId(){return 'MC'+Date.now().toString(36).toUpperCase()+Math.random().toString(36).substr(2,4).toUpperCase();}
-function previewPhoto(input){if(input.files&&input.files[0]){const r=new FileReader();r.onload=e=>{const p=document.getElementById('photoPreview');const i=document.getElementById('uploadIcon');p.src=e.target.result;p.style.display='block';i.style.display='none';photoBase64=e.target.result;};r.readAsDataURL(input.files[0]);}}
-function updateSteps(s){for(let i=1;i<=4;i++){const el=document.getElementById('s'+i);el.classList.remove('active','done');if(i<s)el.classList.add('done');if(i===s)el.classList.add('active');}}
+function generateId() {
+  return 'MC' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).substr(2,4).toUpperCase();
+}
 
-async function submitForm(){
-  const nom=document.getElementById('nom').value.trim();
-  const ddn=document.getElementById('ddn').value;
-  const tel=document.getElementById('tel').value.trim();
-  const groupe=document.getElementById('groupe').value;
-  const c1nom=document.getElementById('c1nom').value.trim();
-  const c1tel=document.getElementById('c1tel').value.trim();
-  const code=document.getElementById('code').value.trim();
-  if(!nom||!ddn||!tel||!groupe||!c1nom||!c1tel){alert('Veuillez remplir tous les champs obligatoires (*)');return;}
-  if(!code){alert('Veuillez choisir un code secret.');return;}
-  const btn=document.getElementById('btnSubmit');
-  btn.disabled=true;btn.innerHTML='<span>⏳</span> Création en cours...';updateSteps(4);
-  const id=generateId();
-  const data={id,nom,ddn:new Date(ddn).toLocaleDateString('fr-FR'),tel,adresse:document.getElementById('adresse').value.trim(),groupe,medecin:document.getElementById('medecin').value.trim(),allergies:document.getElementById('allergies').value.trim(),maladies:document.getElementById('maladies').value.trim(),medicaments:document.getElementById('medicaments').value.trim(),c1nom,c1tel,c2nom:document.getElementById('c2nom').value.trim(),c2tel:document.getElementById('c2tel').value.trim(),code,message:document.getElementById('message').value.trim(),cni:document.getElementById('cni').value.trim(),assurance:document.getElementById('assurance').value.trim(),confidentiel:document.getElementById('confidentiel').value.trim(),photo:photoBase64,date:new Date().toLocaleDateString('fr-FR'),numero_id:id};
-  const all=JSON.parse(localStorage.getItem('medicard_fiches')||'{}');all[id]=data;localStorage.setItem('medicard_fiches',JSON.stringify(all));
-  const link=BASE_URL+'/fiche.html?id='+id;
+function previewPhoto(input) {
+  if (input.files && input.files[0]) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var p = document.getElementById('photoPreview');
+      var i = document.getElementById('uploadIcon');
+      p.src = e.target.result;
+      p.style.display = 'block';
+      i.style.display = 'none';
+      photoBase64 = e.target.result;
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+function updateSteps(s) {
+  for (var i = 1; i <= 4; i++) {
+    var el = document.getElementById('s' + i);
+    el.classList.remove('active', 'done');
+    if (i < s) el.classList.add('done');
+    if (i === s) el.classList.add('active');
+  }
+}
+
+function submitForm() {
+  var nom = document.getElementById('nom').value.trim();
+  var ddn = document.getElementById('ddn').value;
+  var tel = document.getElementById('tel').value.trim();
+  var groupe = document.getElementById('groupe').value;
+  var c1nom = document.getElementById('c1nom').value.trim();
+  var c1tel = document.getElementById('c1tel').value.trim();
+  var code = document.getElementById('code').value.trim();
+
+  if (!nom || !ddn || !tel || !groupe || !c1nom || !c1tel) {
+    alert('Veuillez remplir tous les champs obligatoires (*)');
+    return;
+  }
+  if (!code) {
+    alert('Veuillez choisir un code secret.');
+    return;
+  }
+
+  var btn = document.getElementById('btnSubmit');
+  btn.disabled = true;
+  btn.innerHTML = '<span>⏳</span> Création en cours...';
+  updateSteps(4);
+
+  var id = generateId();
+  var ddnFormatted = ddn ? new Date(ddn).toLocaleDateString('fr-FR') : '';
+  var dateAujourd = new Date().toLocaleDateString('fr-FR');
+
+  var data = {
+    id: id,
+    nom: nom,
+    ddn: ddnFormatted,
+    tel: tel,
+    adresse: document.getElementById('adresse').value.trim(),
+    groupe: groupe,
+    medecin: document.getElementById('medecin').value.trim(),
+    allergies: document.getElementById('allergies').value.trim(),
+    maladies: document.getElementById('maladies').value.trim(),
+    medicaments: document.getElementById('medicaments').value.trim(),
+    c1nom: c1nom,
+    c1tel: c1tel,
+    c2nom: document.getElementById('c2nom').value.trim(),
+    c2tel: document.getElementById('c2tel').value.trim(),
+    code: code,
+    message: document.getElementById('message').value.trim(),
+    cni: document.getElementById('cni').value.trim(),
+    assurance: document.getElementById('assurance').value.trim(),
+    confidentiel: document.getElementById('confidentiel').value.trim(),
+    photo: photoBase64,
+    date: dateAujourd,
+    numero_id: id
+  };
+
+  // Sauvegarder localement
+  var all = {};
+  try { all = JSON.parse(localStorage.getItem('medicard_fiches') || '{}'); } catch(e) {}
+  all[id] = data;
+  localStorage.setItem('medicard_fiches', JSON.stringify(all));
+
+  var link = BASE_URL + '/fiche.html?id=' + id;
 
   // Envoyer email via Formspree
-  try {
-    await fetch('https://formspree.io/f/mojkrwyp', {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
-      body: JSON.stringify({
-        nom_client: nom,
-        telephone: tel,
-        groupe_sanguin: groupe,
-        id_fiche: id,
-        lien_fiche: link,
-        date_inscription: new Date().toLocaleDateString('fr-FR'),
-        _subject: '🏥 Nouveau client MediCard — ' + nom
-      })
-    });
-  } catch(e){ console.log('Formspree error:', e); }
+  fetch(FORMSPREE_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify({
+      nom_client: nom,
+      telephone: tel,
+      groupe_sanguin: groupe,
+      id_fiche: id,
+      lien_fiche: link,
+      date_inscription: dateAujourd,
+      _subject: 'Nouveau client MediCard — ' + nom
+    })
+  }).catch(function(e) { console.log('Formspree:', e); });
 
-  document.getElementById('uniqueLink').textContent=link;
-  document.getElementById('formSection').style.opacity='0';
-  setTimeout(()=>{document.getElementById('formSection').style.display='none';document.getElementById('successScreen').classList.add('show');},300);
+  // Afficher succès
+  document.getElementById('uniqueLink').textContent = link;
+  document.getElementById('formSection').style.opacity = '0';
+  setTimeout(function() {
+    document.getElementById('formSection').style.display = 'none';
+    document.getElementById('successScreen').classList.add('show');
+  }, 300);
 }
-function copyLink(){const link=document.getElementById('uniqueLink').textContent;navigator.clipboard.writeText(link).then(()=>{const b=document.querySelector('.btn-copy');b.textContent='✓ Copié !';setTimeout(()=>b.textContent='Copier le lien',2000);});}
+
+function copyLink() {
+  var link = document.getElementById('uniqueLink').textContent;
+  navigator.clipboard.writeText(link).then(function() {
+    var b = document.querySelector('.btn-copy');
+    b.textContent = '✓ Copié !';
+    setTimeout(function() { b.textContent = 'Copier le lien'; }, 2000);
+  });
+}
 </script>
 </body>
 </html>
