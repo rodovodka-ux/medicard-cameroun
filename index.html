@@ -6,7 +6,7 @@
 <title>MediCard — Ma carte de vie</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-:root{--gold:#C9A84C;--gold-light:#E8C97A;--gold-pale:#F5EDD6;--black:#0A0A0A;--dark:#141414;--dark2:#1C1C1C;--dark3:#242424;--white:#FAFAF8;--muted:#888880;--border:rgba(201,168,76,0.2);--border-h:rgba(201,168,76,0.5);--red:#C0392B;--r:4px;}
+:root{--gold:#C9A84C;--gold-light:#E8C97A;--black:#0A0A0A;--dark:#141414;--dark2:#1C1C1C;--dark3:#242424;--white:#FAFAF8;--muted:#888880;--border:rgba(201,168,76,0.2);--border-h:rgba(201,168,76,0.5);--red:#C0392B;--r:4px;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
 body{font-family:'DM Sans',sans-serif;background:var(--black);color:var(--white);min-height:100vh;overflow-x:hidden;}
@@ -118,7 +118,7 @@ textarea{resize:vertical;min-height:80px;line-height:1.6;}
           <div class="field"><label>Adresse</label><input type="text" id="adresse" placeholder="Yaoundé, Cameroun"></div>
         </div>
         <div class="divider">Photo (optionnelle)</div>
-        <div class="upload-zone" id="uploadZone">
+        <div class="upload-zone">
           <input type="file" accept="image/*" id="photoInput" onchange="previewPhoto(this)">
           <img class="upload-preview" id="photoPreview" alt="Photo">
           <div class="upload-icon" id="uploadIcon">📷</div>
@@ -138,7 +138,7 @@ textarea{resize:vertical;min-height:80px;line-height:1.6;}
           <div class="field"><label>Médecin traitant</label><input type="text" id="medecin" placeholder="Dr. Nom — Téléphone"></div>
         </div>
         <div class="field-grid full" style="margin-bottom:1rem">
-          <div class="field"><label>Allergies connues</label><textarea id="allergies" placeholder="Ex: Pénicilline, arachides, latex..."></textarea></div>
+          <div class="field"><label>Allergies connues</label><textarea id="allergies" placeholder="Ex: Pénicilline, arachides..."></textarea></div>
         </div>
         <div class="field-grid" style="margin-bottom:1rem">
           <div class="field"><label>Maladies importantes</label><textarea id="maladies" placeholder="Ex: Asthme, diabète..."></textarea></div>
@@ -181,12 +181,12 @@ textarea{resize:vertical;min-height:80px;line-height:1.6;}
           <div class="field">
             <label>Code secret <span class="req">*</span></label>
             <input type="text" id="code" placeholder="Ex: MARIE1990 ou votre mot choisi" maxlength="20">
-            <div class="code-hint">Choisissez un mot que <strong>vous communiquerez uniquement à vos proches de confiance</strong>. Ce code protège vos documents et votre message personnel.</div>
+            <div class="code-hint">Choisissez un mot que <strong>vous communiquerez uniquement à vos proches de confiance</strong>.</div>
           </div>
         </div>
         <div class="divider">Message personnel</div>
         <div class="field-grid full" style="margin-bottom:1rem">
-          <div class="field"><label>Message pour vos proches</label><textarea id="message" rows="4" placeholder="Un message que vos proches pourront lire en cas d'urgence... Vos volontés, ce qui compte pour vous."></textarea></div>
+          <div class="field"><label>Message pour vos proches</label><textarea id="message" rows="4" placeholder="Un message que vos proches pourront lire en cas d'urgence..."></textarea></div>
         </div>
         <div class="divider">Coffre-fort numérique</div>
         <div class="field-grid" style="margin-bottom:1rem">
@@ -206,17 +206,33 @@ textarea{resize:vertical;min-height:80px;line-height:1.6;}
   <div class="success-screen" id="successScreen">
     <div class="success-ring">✦</div>
     <h2>Votre fiche est créée</h2>
-    <p>Votre MediCard est prête. Partagez ce lien unique avec vos proches<br>ou imprimez votre QR code pour votre carte physique.</p>
+    <p>Votre MediCard est prête. Votre lien unique ci-dessous.<br>MediCard Cameroun va créer et livrer votre carte sous 48h.</p>
     <div class="link-display" id="uniqueLink">—</div>
     <button class="btn-copy" onclick="copyLink()">Copier le lien</button>
-    <p style="margin-top:2rem;font-size:12px;color:var(--muted);">Conservez ce lien précieusement — il est unique et permanent.</p>
+    <p style="margin-top:2rem;font-size:12px;color:var(--muted);">Conservez ce lien — il donne accès à votre fiche médicale complète.</p>
   </div>
 </div>
 <script>
-let photoBase64=null;
+// =====================================================
+// EMAILJS CONFIG — À remplir après inscription
+// 1. Va sur emailjs.com
+// 2. Crée un compte gratuit
+// 3. Crée un service Gmail
+// 4. Crée un template avec les variables ci-dessous
+// 5. Remplace les 3 valeurs suivantes
+// =====================================================
+const EMAILJS_SERVICE_ID = 'REMPLACE_SERVICE_ID';
+const EMAILJS_TEMPLATE_ID = 'REMPLACE_TEMPLATE_ID';
+const EMAILJS_PUBLIC_KEY = 'REMPLACE_PUBLIC_KEY';
+const ADMIN_EMAIL = 'rodovodka@gmail.com';
+const BASE_URL = 'https://rodovodka-ux.github.io/medicard';
+// =====================================================
+
+let photoBase64 = null;
 function generateId(){return 'MC'+Date.now().toString(36).toUpperCase()+Math.random().toString(36).substr(2,4).toUpperCase();}
 function previewPhoto(input){if(input.files&&input.files[0]){const r=new FileReader();r.onload=e=>{const p=document.getElementById('photoPreview');const i=document.getElementById('uploadIcon');p.src=e.target.result;p.style.display='block';i.style.display='none';photoBase64=e.target.result;};r.readAsDataURL(input.files[0]);}}
 function updateSteps(s){for(let i=1;i<=4;i++){const el=document.getElementById('s'+i);el.classList.remove('active','done');if(i<s)el.classList.add('done');if(i===s)el.classList.add('active');}}
+
 async function submitForm(){
   const nom=document.getElementById('nom').value.trim();
   const ddn=document.getElementById('ddn').value;
@@ -226,13 +242,31 @@ async function submitForm(){
   const c1tel=document.getElementById('c1tel').value.trim();
   const code=document.getElementById('code').value.trim();
   if(!nom||!ddn||!tel||!groupe||!c1nom||!c1tel){alert('Veuillez remplir tous les champs obligatoires (*)');return;}
-  if(!code){alert('Veuillez choisir un code secret pour protéger votre espace privé.');return;}
+  if(!code){alert('Veuillez choisir un code secret.');return;}
   const btn=document.getElementById('btnSubmit');
   btn.disabled=true;btn.innerHTML='<span>⏳</span> Création en cours...';updateSteps(4);
   const id=generateId();
   const data={id,nom,ddn:new Date(ddn).toLocaleDateString('fr-FR'),tel,adresse:document.getElementById('adresse').value.trim(),groupe,medecin:document.getElementById('medecin').value.trim(),allergies:document.getElementById('allergies').value.trim(),maladies:document.getElementById('maladies').value.trim(),medicaments:document.getElementById('medicaments').value.trim(),c1nom,c1tel,c2nom:document.getElementById('c2nom').value.trim(),c2tel:document.getElementById('c2tel').value.trim(),code,message:document.getElementById('message').value.trim(),cni:document.getElementById('cni').value.trim(),assurance:document.getElementById('assurance').value.trim(),confidentiel:document.getElementById('confidentiel').value.trim(),photo:photoBase64,date:new Date().toLocaleDateString('fr-FR'),numero_id:id};
   const all=JSON.parse(localStorage.getItem('medicard_fiches')||'{}');all[id]=data;localStorage.setItem('medicard_fiches',JSON.stringify(all));
-  const link="https://rodovodka-ux.github.io/medicard"+'/fiche.html?id='+id;
+  const link=BASE_URL+'/fiche.html?id='+id;
+
+  // Envoyer email via Formspree
+  try {
+    await fetch('https://formspree.io/f/mojkrwyp', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+      body: JSON.stringify({
+        nom_client: nom,
+        telephone: tel,
+        groupe_sanguin: groupe,
+        id_fiche: id,
+        lien_fiche: link,
+        date_inscription: new Date().toLocaleDateString('fr-FR'),
+        _subject: '🏥 Nouveau client MediCard — ' + nom
+      })
+    });
+  } catch(e){ console.log('Formspree error:', e); }
+
   document.getElementById('uniqueLink').textContent=link;
   document.getElementById('formSection').style.opacity='0';
   setTimeout(()=>{document.getElementById('formSection').style.display='none';document.getElementById('successScreen').classList.add('show');},300);
