@@ -232,7 +232,7 @@ async function submitForm(){
   const id=generateId();
   const data={id,nom,ddn:new Date(ddn).toLocaleDateString('fr-FR'),tel,adresse:document.getElementById('adresse').value.trim(),groupe,medecin:document.getElementById('medecin').value.trim(),allergies:document.getElementById('allergies').value.trim(),maladies:document.getElementById('maladies').value.trim(),medicaments:document.getElementById('medicaments').value.trim(),c1nom,c1tel,c2nom:document.getElementById('c2nom').value.trim(),c2tel:document.getElementById('c2tel').value.trim(),code,message:document.getElementById('message').value.trim(),cni:document.getElementById('cni').value.trim(),assurance:document.getElementById('assurance').value.trim(),confidentiel:document.getElementById('confidentiel').value.trim(),photo:photoBase64,date:new Date().toLocaleDateString('fr-FR'),numero_id:id};
   const all=JSON.parse(localStorage.getItem('medicard_fiches')||'{}');all[id]=data;localStorage.setItem('medicard_fiches',JSON.stringify(all));
-  const link=window.location.origin+'/fiche.html?id='+id;
+  const link="https://rodovodka-ux.github.io/medicard"+'/fiche.html?id='+id;
   document.getElementById('uniqueLink').textContent=link;
   document.getElementById('formSection').style.opacity='0';
   setTimeout(()=>{document.getElementById('formSection').style.display='none';document.getElementById('successScreen').classList.add('show');},300);
