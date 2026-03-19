@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MediCard Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root{--gold:#C9A84C;--gold-light:#E8C97A;--black:#0A0A0A;--dark:#141414;--dark2:#1C1C1C;--dark3:#242424;--white:#FAFAF8;--muted:#888880;--border:rgba(201,168,76,0.2);--red:#C0392B;--red-light:rgba(192,57,43,0.12);--r:4px;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',sans-serif;background:var(--black);color:var(--white);min-height:100vh;}
+
+/* LOGIN */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1rem;}
+.login-card{background:var(--dark2);border:1px solid var(--border);border-radius:12px;padding:2.5rem;max-width:360px;width:100%;text-align:center;}
+.login-logo{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;color:var(--gold);margin-bottom:.25rem;}
+.login-logo span{font-style:italic;}
+.login-sub{font-size:12px;color:var(--muted);margin-bottom:2rem;text-transform:uppercase;letter-spacing:.1em;}
+.login-input{width:100%;font-family:'DM Sans',sans-serif;font-size:15px;padding:12px 16px;background:var(--dark3);border:1px solid var(--border);border-radius:var(--r);color:var(--white);text-align:center;letter-spacing:.15em;outline:none;margin-bottom:1rem;}
+.login-input:focus{border-color:var(--gold);}
+.login-btn{width:100%;padding:12px;background:var(--gold);color:var(--black);border:none;border-radius:var(--r);font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;cursor:pointer;letter-spacing:.08em;text-transform:uppercase;}
+.login-btn:hover{background:var(--gold-light);}
+.login-err{font-size:12px;color:var(--red);margin-top:.75rem;display:none;}
+.login-hint{font-size:11px;color:var(--muted);margin-top:1rem;}
+
+/* DASHBOARD */
+.dashboard{display:none;}
+.dashboard.show{display:block;}
+.topbar{background:var(--dark2);border-bottom:1px solid var(--border);padding:12px 1.5rem;display:flex;align-items:center;justify-content:space-between;}
+.topbar-brand{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--gold);}
+.topbar-brand span{font-style:italic;}
+.topbar-right{display:flex;align-items:center;gap:12px;}
+.topbar-badge{font-size:11px;color:var(--muted);background:var(--dark3);border:1px solid var(--border);padding:4px 12px;border-radius:12px;}
+.logout-btn{font-size:12px;color:var(--muted);background:transparent;border:1px solid var(--border);padding:6px 14px;border-radius:var(--r);cursor:pointer;font-family:'DM Sans',sans-serif;}
+.logout-btn:hover{color:var(--white);}
+
+.main{padding:2rem 1.5rem;max-width:1100px;margin:0 auto;}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:2rem;}
+.stat{background:var(--dark2);border:1px solid var(--border);border-radius:8px;padding:1.25rem;}
+.stat-val{font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:300;color:var(--gold);line-height:1;}
+.stat-lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-top:4px;}
+
+/* SEARCH */
+.search-bar{display:flex;gap:12px;margin-bottom:1.5rem;}
+.search-input{flex:1;font-family:'DM Sans',sans-serif;font-size:14px;padding:10px 14px;background:var(--dark2);border:1px solid var(--border);border-radius:var(--r);color:var(--white);outline:none;}
+.search-input:focus{border-color:var(--gold);}
+
+/* TABLE */
+.table-wrap{background:var(--dark2);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.table-head{padding:1rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.table-title{font-size:13px;font-weight:500;color:var(--gold);text-transform:uppercase;letter-spacing:.08em;}
+table{width:100%;border-collapse:collapse;}
+th{text-align:left;font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:10px 16px;border-bottom:1px solid var(--border);background:var(--dark3);}
+td{padding:12px 16px;font-size:13px;border-bottom:1px solid rgba(255,255,255,0.04);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(201,168,76,0.03);}
+.blood-badge{background:var(--red-light);color:#F09595;border:1px solid rgba(192,57,43,0.3);font-size:12px;font-weight:500;padding:2px 8px;border-radius:4px;}
+.avatar{width:30px;height:30px;border-radius:50%;background:var(--dark3);border:1px solid var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;color:var(--gold);margin-right:8px;vertical-align:middle;}
+.btn-action{font-size:11px;padding:5px 12px;border-radius:var(--r);cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;border:none;transition:all .2s;}
+.btn-view{background:rgba(201,168,76,0.1);color:var(--gold);border:1px solid var(--border);}
+.btn-view:hover{background:var(--gold);color:var(--black);}
+.btn-card{background:var(--red-light);color:#F09595;border:1px solid rgba(192,57,43,0.3);}
+.btn-card:hover{background:var(--red);color:var(--white);}
+
+/* EMPTY */
+.empty{text-align:center;padding:3rem;color:var(--muted);}
+.empty h3{font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:var(--white);margin-bottom:.5rem;}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;z-index:1000;padding:1rem;display:none;}
+.modal-overlay.show{display:flex;}
+.modal{background:var(--dark2);border:1px solid var(--border);border-radius:12px;max-width:520px;width:100%;max-height:90vh;overflow-y:auto;}
+.modal-head{padding:1.25rem 1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.modal-title{font-family:'Cormorant Garamond',serif;font-size:1.3rem;color:var(--gold);}
+.modal-close{background:transparent;border:none;color:var(--muted);font-size:1.3rem;cursor:pointer;}
+.modal-close:hover{color:var(--white);}
+.modal-body{padding:1.5rem;}
+.qr-box{background:var(--dark3);border:1px solid var(--border);border-radius:8px;padding:1.5rem;text-align:center;margin-bottom:1rem;}
+.qr-box canvas, .qr-box img{border-radius:4px;}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1rem;}
+.info-item{background:var(--dark3);border-radius:var(--r);padding:10px;}
+.info-item-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px;}
+.info-item-val{font-size:13px;color:var(--white);}
+.info-item.blood .info-item-val{color:var(--red);font-size:16px;font-weight:500;}
+.btn-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.btn-dl{padding:10px;border-radius:var(--r);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;font-weight:500;letter-spacing:.06em;text-transform:uppercase;border:none;transition:all .2s;}
+.btn-dl-qr{background:rgba(201,168,76,0.1);color:var(--gold);border:1px solid var(--border);}
+.btn-dl-qr:hover{background:var(--gold);color:var(--black);}
+.btn-dl-pdf{background:var(--gold);color:var(--black);}
+.btn-dl-pdf:hover{background:var(--gold-light);}
+.link-box{background:var(--dark3);border:1px solid var(--border);border-radius:var(--r);padding:.75rem 1rem;font-size:11px;color:var(--gold);word-break:break-all;font-family:monospace;margin-bottom:1rem;}
+
+@media(max-width:600px){.stats{grid-template-columns:1fr 1fr;}.info-grid{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="loginWrap">
+  <div class="login-card">
+    <div class="login-logo">Medi<span>Card</span></div>
+    <div class="login-sub">Espace Administration</div>
+    <input class="login-input" type="password" id="pwInput" placeholder="••••••••" onkeydown="if(event.key==='Enter')login()">
+    <button class="login-btn" onclick="login()">Connexion</button>
+    <div class="login-err" id="loginErr">Mot de passe incorrect</div>
+    <div class="login-hint">Mot de passe par défaut : <strong>medicard2025</strong></div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="dashboard" id="dashboard">
+  <div class="topbar">
+    <div class="topbar-brand">Medi<span>Card</span> — Admin</div>
+    <div class="topbar-right">
+      <span class="topbar-badge" id="statBadge">0 clients</span>
+      <button class="logout-btn" onclick="logout()">Déconnexion</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="stats">
+      <div class="stat"><div class="stat-val" id="statTotal">0</div><div class="stat-lbl">Fiches créées</div></div>
+      <div class="stat"><div class="stat-val" id="statToday">0</div><div class="stat-lbl">Aujourd'hui</div></div>
+      <div class="stat"><div class="stat-val" id="statWeek">0</div><div class="stat-lbl">Cette semaine</div></div>
+    </div>
+
+    <div class="search-bar">
+      <input class="search-input" type="text" id="searchInput" placeholder="Rechercher un client..." oninput="filterClients()">
+    </div>
+
+    <div class="table-wrap">
+      <div class="table-head">
+        <span class="table-title">Tous les clients</span>
+      </div>
+      <div id="tableContainer">
+        <div class="empty"><h3>Aucun client pour l'instant</h3><p>Les clients apparaissent ici après avoir rempli le formulaire.</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title" id="modalTitle">Fiche client</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+const ADMIN_PASS = 'medicard2025';
+const BASE_URL = 'https://rodovodka-ux.github.io/medicard';
+let allClients = [];
+let currentClient = null;
+
+function login(){
+  const pw = document.getElementById('pwInput').value;
+  if(pw === ADMIN_PASS){
+    sessionStorage.setItem('mc_admin','1');
+    document.getElementById('loginWrap').style.display='none';
+    document.getElementById('dashboard').classList.add('show');
+    loadClients();
+  } else {
+    document.getElementById('loginErr').style.display='block';
+  }
+}
+
+function logout(){
+  sessionStorage.removeItem('mc_admin');
+  location.reload();
+}
+
+if(sessionStorage.getItem('mc_admin')==='1'){
+  document.getElementById('loginWrap').style.display='none';
+  document.getElementById('dashboard').classList.add('show');
+}
+
+function getInitials(n){if(!n)return '?';return n.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);}
+
+function loadClients(){
+  try{
+    const stored = JSON.parse(localStorage.getItem('medicard_fiches')||'{}');
+    allClients = Object.values(stored).sort((a,b)=>b.id>a.id?1:-1);
+  } catch(e){ allClients=[]; }
+  updateStats();
+  renderTable(allClients);
+  document.getElementById('statBadge').textContent = allClients.length + ' client' + (allClients.length>1?'s':'');
+}
+
+function updateStats(){
+  document.getElementById('statTotal').textContent = allClients.length;
+  const today = new Date().toLocaleDateString('fr-FR');
+  document.getElementById('statToday').textContent = allClients.filter(c=>c.date===today).length;
+  document.getElementById('statWeek').textContent = allClients.length;
+}
+
+function renderTable(clients){
+  const container = document.getElementById('tableContainer');
+  if(!clients.length){
+    container.innerHTML='<div class="empty"><h3>Aucun client</h3><p>Aucun résultat trouvé.</p></div>';
+    return;
+  }
+  container.innerHTML=`<table>
+    <thead><tr>
+      <th>Client</th><th>Téléphone</th><th>Groupe</th><th>Date</th><th>Actions</th>
+    </tr></thead>
+    <tbody>
+      ${clients.map(c=>`<tr>
+        <td><span class="avatar">${getInitials(c.nom)}</span><strong>${c.nom||'—'}</strong></td>
+        <td>${c.tel||'—'}</td>
+        <td><span class="blood-badge">${c.groupe||'?'}</span></td>
+        <td>${c.date||'—'}</td>
+        <td style="display:flex;gap:6px;">
+          <button class="btn-action btn-view" onclick="openModal('${c.id}')">Voir + QR</button>
+          <button class="btn-action btn-card" onclick="generatePDF('${c.id}')">Carte PDF</button>
+        </td>
+      </tr>`).join('')}
+    </tbody>
+  </table>`;
+}
+
+function filterClients(){
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  if(!q){renderTable(allClients);return;}
+  renderTable(allClients.filter(c=>(c.nom||'').toLowerCase().includes(q)||(c.tel||'').includes(q)||(c.groupe||'').toLowerCase().includes(q)));
+}
+
+function openModal(id){
+  const d = allClients.find(c=>c.id===id);
+  if(!d)return;
+  currentClient = d;
+  const link = BASE_URL+'/fiche.html?id='+d.id;
+  document.getElementById('modalTitle').textContent = d.nom || 'Fiche client';
+  document.getElementById('modalBody').innerHTML=`
+    <div class="qr-box">
+      <div id="modalQR" style="display:inline-block;margin-bottom:8px;"></div>
+      <div style="font-size:11px;color:var(--muted);">QR code de la carte physique</div>
+    </div>
+    <div class="link-box">${link}</div>
+    <div class="info-grid">
+      <div class="info-item blood"><div class="info-item-lbl">Groupe sanguin</div><div class="info-item-val">${d.groupe||'?'}</div></div>
+      <div class="info-item"><div class="info-item-lbl">Téléphone</div><div class="info-item-val">${d.tel||'—'}</div></div>
+      <div class="info-item"><div class="info-item-lbl">Contact urgence</div><div class="info-item-val">${d.c1nom||'—'} — ${d.c1tel||'—'}</div></div>
+      <div class="info-item"><div class="info-item-lbl">Date inscription</div><div class="info-item-val">${d.date||'—'}</div></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-dl btn-dl-qr" onclick="downloadQR()">Télécharger QR</button>
+      <button class="btn-dl btn-dl-pdf" onclick="generatePDF('${d.id}')">Générer carte PDF</button>
+    </div>
+  `;
+  document.getElementById('modal').classList.add('show');
+
+  // Generate QR
+  setTimeout(()=>{
+    new QRCode(document.getElementById('modalQR'),{
+      text: link, width:150, height:150,
+      colorDark:'#C9A84C', colorLight:'#141414',
+      correctLevel: QRCode.CorrectLevel.H
+    });
+  }, 100);
+}
+
+function closeModal(){
+  document.getElementById('modal').classList.remove('show');
+  currentClient = null;
+}
+
+function downloadQR(){
+  const qrCanvas = document.querySelector('#modalQR canvas');
+  if(!qrCanvas){alert('QR code non disponible');return;}
+  const link = document.createElement('a');
+  link.download = (currentClient?.nom||'client').replace(/\s+/g,'_')+'_QR.png';
+  link.href = qrCanvas.toDataURL('image/png');
+  link.click();
+}
+
+function generatePDF(id){
+  const d = allClients.find(c=>c.id===id);
+  if(!d){alert('Client non trouvé');return;}
+  const {jsPDF} = window.jspdf;
+  const doc = new jsPDF({unit:'mm',format:[85.6,54]});
+  const W=85.6, H=54;
+
+  // RECTO
+  doc.setFillColor(15,110,86); doc.rect(0,0,W,H,'F');
+  doc.setFillColor(8,80,65); doc.rect(0,0,W,13,'F');
+  doc.setTextColor(159,225,203); doc.setFontSize(6); doc.setFont(undefined,'bold');
+  doc.text('MEDICARD CAMEROUN',4,8);
+  doc.setFillColor(255,255,255);
+  doc.rect(W-10,3,3,8,'F'); doc.rect(W-12.5,6.5,8,3,'F');
+  doc.setTextColor(255,255,255); doc.setFontSize(10); doc.setFont(undefined,'bold');
+  doc.text(d.nom||'—',4,20);
+  doc.setTextColor(159,225,203); doc.setFontSize(7); doc.setFont(undefined,'normal');
+  doc.text('Ne(e) le '+( d.ddn||'—'),4,25);
+  doc.setFillColor(160,45,45); doc.roundedRect(4,29,14,10,1.5,1.5,'F');
+  doc.setTextColor(255,255,255); doc.setFontSize(11); doc.setFont(undefined,'bold');
+  doc.text(d.groupe||'?',11,36.5,{align:'center'});
+  doc.setFillColor(26,122,98); doc.roundedRect(20,29,W-24,10,1.5,1.5,'F');
+  doc.setTextColor(159,225,203); doc.setFontSize(6);
+  doc.text('URGENCE',22,33.5);
+  doc.setTextColor(255,255,255); doc.setFontSize(7); doc.setFont(undefined,'bold');
+  doc.text((d.c1nom||'—')+' — '+(d.c1tel||'—'),22,38);
+  doc.setFillColor(10,61,46); doc.rect(0,46,W,8,'F');
+  doc.setTextColor(159,225,203); doc.setFontSize(7);
+  doc.text(d.tel||'—',4,51);
+  doc.setFontSize(6); doc.setFont(undefined,'italic');
+  doc.text("En cas d'urgence, scanner le verso",W-4,51,{align:'right'});
+
+  // VERSO
+  doc.addPage([85.6,54]);
+  doc.setFillColor(255,255,255); doc.rect(0,0,W,H,'F');
+  doc.setFillColor(15,110,86); doc.rect(0,0,9,H,'F');
+  doc.setTextColor(159,225,203); doc.setFontSize(6);
+  doc.text('MEDICARD',4.5,H/2,{angle:90,align:'center'});
+  doc.setTextColor(15,110,86); doc.setFontSize(7); doc.setFont(undefined,'bold');
+  doc.text('FICHE MEDICALE',12,10);
+  const rows=[['Nom',d.nom],['Né(e) le',d.ddn],['Groupe',d.groupe],['Tél.',d.tel],['Urgence',d.c1tel]];
+  let ry=17;
+  rows.forEach(([lbl,val])=>{
+    doc.setTextColor(150,150,150); doc.setFontSize(6); doc.setFont(undefined,'normal');
+    doc.text(lbl,12,ry);
+    doc.setTextColor(26,26,26); doc.setFontSize(7); doc.setFont(undefined,'bold');
+    doc.text(val||'—',30,ry);
+    ry+=5.5;
+  });
+  doc.setTextColor(150,150,150); doc.setFontSize(6); doc.setFont(undefined,'italic');
+  doc.text('ID: '+d.id,12,H-4);
+
+  // QR sur verso
+  const qrCanvas = document.querySelector('#modalQR canvas');
+  if(qrCanvas){
+    try{
+      const qrData = qrCanvas.toDataURL('image/png');
+      doc.addImage(qrData,'PNG',W-36,8,28,28);
+      doc.setTextColor(15,110,86); doc.setFontSize(6); doc.setFont(undefined,'normal');
+      doc.text('Scanner pour',W-22,38,{align:'center'});
+      doc.text('fiche complète',W-22,42,{align:'center'});
+    }catch(e){}
+  }
+
+  doc.save((d.nom||'client').replace(/\s+/g,'_')+'_MediCard.pdf');
+  closeModal();
+}
+
+// Auto refresh
+if(sessionStorage.getItem('mc_admin')==='1') loadClients();
+setInterval(()=>{if(sessionStorage.getItem('mc_admin')==='1')loadClients();},30000);
+</script>
+</body>
+</html>
